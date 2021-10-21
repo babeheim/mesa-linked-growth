@@ -1,6 +1,7 @@
 stan/*
 !stan/*.stan
 
+raw_data/
 figures/
 samples/
 RData/
