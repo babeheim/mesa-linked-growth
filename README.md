@@ -37,3 +37,30 @@ Because the analysis dataset cannot be shared publically, this repository includ
 
 # Main Hypotheses & Predictions
 
+This project uses a linked mixture model estimating the onset and progression of atherosclerosis, as measured by the Coronary Calcium Score. Model details are described [here](https://www.medrxiv.org/content/10.1101/2021.09.13.21263547v1). In this analysis, we ask three questions relating to the growth model:
+1. are there distinct growth rates between individuals and between ethnic groups?
+2. do fast-growing CAC also have earlier ages of onset?
+3. does the linked-growth model make better predictions than alternatives?
+
+To answer these questions, we test five hypotheses related to growth-model parameters, with associated empirical predictions:
+
+- *Hypothesis 1*: there are clear differences in growth rates within group that map onto known differences in risk profiles for onset ages
+  - *H1, Prediction 1*: men have higher rates of progression than women
+  - *H1, Prediction 2*: at least some of the four ethnic groups are statistically distinct from the population average growth rate
+
+- *Hypothesis 2*: all MESA patients tend to grow CAC at similar rates, but some begin growing CAC decades earlier than others
+  - *H2, Prediction 1*: total variation in onset will show more variation than total variation on progression
+  - *H2, Prediction 2*: individual variation in onset will show more variation than individual variation on progression
+
+- *Hypothesis 3*: diet, physical activity, smoking, alcohol use are more important drivers of CAC onset and growth than cultural traditions or genetic variations positively associated with ethnicity in the MESA study, or sex-specific physiological or behavioral correlates
+  - *H3, Prediction 1*: there is more inter-individual variation in progression rate than variation between ethnicities
+  - *H3, Prediction 2*: there is more inter-individual variation in onset age than variation between ethnicities
+  - *H3, Prediction 3*: there is more inter-individual variation in progression rate than variation between the sexes.
+  - *H3, Prediction 4*: there is more inter-individual variation in onset age than variation between the sexes
+
+- *Hypothesis 4*: the physiological causes of fast progression are also the causes of earlier ages of onset, and both are partly associated with sex and ethnicity
+  - *H4, Prediction 1*: the individual-specific variation in onset and progression is negatively correlated
+
+- *Hypothesis 5*: the linked-growth model captures specific physiological features of atherosclerosis progression better than more-standard linear models
+  - *H5, Prediction 1*: average accuracy (measured by log-likelihood) of out-of-sample predictions is higher between sets of time-series, vs standard models
+  - *H5, Prediction 2*: average accuracy (measured by log-likelihood) of out-of-sample predictions is higher both within individual patient time-series in MESA, vs standard models
