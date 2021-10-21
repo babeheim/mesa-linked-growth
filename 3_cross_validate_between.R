@@ -9,9 +9,10 @@ out <- mclapply(1:n_cv_sets, function(validation_set) {
 
   model_list <- sort(unique(c(hurdle_list, lognormal_list)))
 
-  vlls <- list(
+  set_output <- list(
     hurdle_vlls = list(),
-    lognormal_vlls = list()
+    lognormal_vlls = list(),
+    diagnostics <- list()
   )
 
   obs$in_validation <- obs$between_cv_set == validation_set
@@ -40,19 +41,40 @@ out <- mclapply(1:n_cv_sets, function(validation_set) {
 
   for (my_model in model_list) {
     fit <- cmdstan_models[[my_model]]$sample(parallel_chains = 4, chains = 4,
-      iter_warmup = floor(n_iter/2), iter_sampling = n_iter, adapt_delta = 0.8,
+      iter_warmup = floor(n_iter/2), iter_sampling = n_iter, adapt_delta = adapt_delta,
       max_treedepth = 15, data = stan_data, step_size = 0.1,
       refresh = 0, show_messages = FALSE, output_dir = "samples")
+    set_output$diagnostics[[my_model]] <- extract_diagnostics(fit)
     samples <- as.data.frame(as_draws_df(fit$draws()))
-    if (my_model %in% hurdle_list) vlls$hurdle_vlls[[my_model]] <- samples$hurdle_vll
-    if (my_model %in% lognormal_list) vlls$lognormal_vlls[[my_model]] <- samples$lognormal_vll
+    if (my_model %in% hurdle_list) set_output$hurdle_vlls[[my_model]] <- samples$hurdle_vll
+    if (my_model %in% lognormal_list) set_output$lognormal_vlls[[my_model]] <- samples$lognormal_vll
   }
 
-  return(vlls)
+  return(set_output)
 
-  print(paste("finished between-patient cross-validation set", i))
+  print(paste("finished between-patient cross-validation set", validation_set))
 
 }, mc.cores = n_cv_sets)
+
+for (i in 1:length(out)) {
+  if (i == 1) {
+    out[[i]]$diagnostics %>% bind_rows() %>% as.data.frame() -> diagnostics
+    diagnostics$validation_set <- i
+    diagnostics$model <- names(out[[i]]$diagnostics)
+  } else {
+    out[[i]]$diagnostics %>% bind_rows() %>% as.data.frame() -> diagnostics_add
+    diagnostics_add$validation_set <- i
+    diagnostics_add$model <- names(out[[i]]$diagnostics)
+    diagnostics <- bind_rows(diagnostics, diagnostics_add)
+  }
+}
+
+diagnostics$n_ind <- n_ind
+diagnostics$n_iter <- n_iter
+diagnostics$chains <- 4
+diagnostics$adapt_delta <- 0.8
+
+write.csv(diagnostics, "figures/diagnosticsCrossValidationBetween.csv", row.names = FALSE)
 
 # assemble validation log-likelihood data frames, one for each of the two nodes, with posterior summed vll's for each model over all observations
 for (i in 1:length(out)) {
@@ -130,7 +152,7 @@ for (i in 1:length(lognormal_est)) {
 
 writeLines(prep_latex_variables(calcs), "figures/crossBetweenCalcs.tex")
 
-png("./figures/crossValidationForestBetween.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
+png("./figures/crossValidationForestBetween.png", res = 300, units = "in", height = 5, width = 10)
 
 par(mfrow = c(1, 2))
 

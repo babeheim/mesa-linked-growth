@@ -75,8 +75,6 @@ texttab <- function(input.matrix, hlines=NA) {
   if (all(!is.na(hlines))) {
     for (i in seq_along(hlines)) output <- append(output, "\\hline", hlines[i] + (i - 1))
   }
-#  output <- append("\\toprule", output)
-#  output <- append(output, "\\bottomrule") # apparently i cannot do this?
   return(output)
 }
 

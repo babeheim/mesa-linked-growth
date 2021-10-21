@@ -22,14 +22,20 @@ stan_data <- c(
 )
 
 fit <- cmdstan_models[["linked_hurdle_lognormal_i"]]$sample(parallel_chains = 4, chains = 4,
-  iter_warmup = floor(n_iter/2), iter_sampling = n_iter, adapt_delta = 0.9,
+  iter_warmup = floor(n_iter/2), iter_sampling = n_iter, adapt_delta = adapt_delta,
   max_treedepth = 15, data = stan_data, step_size = 0.1,
   refresh = 100, output_dir = "samples")
 
 fit$save_object(file = "./RData/fit.RDS")
 
-fit_diagnostics <- extract_diagnostics(fit)
-write.csv(as.data.frame(fit_diagnostics), "figures/fit_diagnostics.csv", row.names = FALSE)
+diagnostics <- extract_diagnostics(fit)
+diagnostics$machine_name <- machine_name
+diagnostics$project_seed <- project_seed
+diagnostics$n_ind <- n_ind
+diagnostics$n_iter <- n_iter
+diagnostics$chains <- 4
+diagnostics$adapt_delta <- 0.8
+write.csv(as.data.frame(diagnostics), "figures/diagnostics.csv", row.names = FALSE)
 
 ######
 
@@ -362,7 +368,7 @@ writeLines(texttab(varianceDecomp_tex, hlines = c(1, 5)), "./figures/varianceDec
 
 print("make figure onsetDoublingForest")
 
-png("./figures/onsetDoublingForest.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
+png("./figures/onsetDoublingForest.png", res = 300, units = "in", height = 5, width = 10)
 
 sex_offset <- 0.1
 
@@ -431,7 +437,7 @@ dev.off()
 
 print("make figure hasCacAgeSex")
 
-png("./figures/hasCacAgeSex.png", res = 300, units = "in", height = 5, width = 5, type = "cairo")
+png("./figures/hasCacAgeSex.png", res = 300, units = "in", height = 5, width = 5)
 
 dm <- obs_age_sex
 
@@ -471,7 +477,7 @@ dev.off()
 
 print("make figure hasCacAgeSexEthnicity")
 
-png("./figures/hasCacAgeSexEthnicity.png", res = 300, units = "in", height = 10, width = 10, type = "cairo")
+png("./figures/hasCacAgeSexEthnicity.png", res = 300, units = "in", height = 10, width = 10)
 
 dm <- obs_age_sex_eth
 
@@ -510,7 +516,7 @@ dev.off()
 
 print("make figure medianCacAge5Sex")
 
-png("./figures/medianCacAge5Sex.png", res = 300, units = "in", height = 5, width = 5, type = "cairo")
+png("./figures/medianCacAge5Sex.png", res = 300, units = "in", height = 5, width = 5)
 
 dm <- obs_age5_sex
 
@@ -548,7 +554,7 @@ dev.off()
 
 print("make figure medianCacAgeSexEthnicity")
 
-png("./figures/medianCacAge5SexEthnicity.png", res = 300, units = "in", height = 10, width = 10, type = "cairo")
+png("./figures/medianCacAge5SexEthnicity.png", res = 300, units = "in", height = 10, width = 10)
 
 dm <- obs_age5_sex_eth
 
@@ -589,7 +595,7 @@ dev.off()
 
 print("make figure onsetGrowthEthnicitySex")
 
-png("./figures/onsetGrowthEthnicitySex.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
+png("./figures/onsetGrowthEthnicitySex.png", res = 300, units = "in", height = 5, width = 10)
 
 par(mfrow = c(1, 2))
 

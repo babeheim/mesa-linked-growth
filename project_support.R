@@ -14,11 +14,12 @@ library(tikzDevice)
 
 ##### global parameters #####
 
-machine_name <- "imac"
+machine_name <- "mac-mini"
 project_seed <- 500
 n_iter <- 1000
 n_ind <- 100
-n_cv_sets <- 3
+n_cv_sets <- 10
+adapt_delta <- 0.9
 
 set.seed(project_seed)
 options(warnPartialMatchDollar=TRUE)

@@ -43,6 +43,8 @@ calc_group_variance_ratio <- function(x, g) {
 evar <- function(x) mean((x - mean(x))^2)
 
 summarize_samples <- function(samples) {
+  if (mean(is.finite(samples)) < 0.9) stop("too many Inf")
+  samples <- samples[is.finite(samples)]
   out <- list(
     mean = mean(samples),
     sd = sd(samples),
