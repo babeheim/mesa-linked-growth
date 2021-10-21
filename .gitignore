@@ -1,0 +1,10 @@
+stan/*
+!stan/*.stan
+
+figures/
+samples/
+RData/
+
+people.csv
+observations.csv
+
