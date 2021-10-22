@@ -167,7 +167,8 @@ obs <- subset(obs, !is.na(age) & !is.na(cac))
 
 expect_true(nrow(ppl) == 6814)
 expect_true(nrow(obs) == 31148)
-
+expect_true(all(obs$pid %in% ppl$pid))
+expect_true(!any(is.na(ppl$age_exam1)))
 expect_true(!any(is.na(ppl$male)))
 expect_true(!any(is.na(ppl$eth)))
 
@@ -182,19 +183,25 @@ obs <- obs[keep_obs,]
 ppl$pid <- 1:nrow(ppl)
 obs$pid <- match(obs$mesa_id, ppl$mesa_id)
 
-expect_true(nrow(ppl) == n_ind)
 expect_true(all(ppl$mesa_id[5] == obs$mesa_id[obs$pid == 5]))
 expect_true(all(ppl$mesa_id[15] == obs$mesa_id[obs$pid == 15]))
 expect_true(all(ppl$mesa_id[25] == obs$mesa_id[obs$pid == 25]))
 
 # create derived variables for analysis
 
+ppl$exam_schedule <- NA
+for (i in 1:nrow(ppl)) {
+  ppl$exam_schedule[i] <- paste0(sort(unique(obs$exam[obs$pid == ppl$pid[i]])), collapse = "")
+}
+
 obs$age_su <- (obs$age - 50) / 10
 ppl$sex <- 2 - ppl$male # 1 = male, 2 = female
+obs$eth <- ppl$eth[match(obs$pid, ppl$pid)]
+obs$sex <- ppl$sex[match(obs$pid, ppl$pid)]
 
 # filter to just the variables we need
-ppl <- select(ppl, pid, sex, eth)
-obs <- select(obs, pid, exam, age, age_su, cac)
+ppl <- select(ppl, pid, sex, eth, age_exam1, exam_schedule)
+obs <- select(obs, pid, exam, eth, sex, scan, age, age_su, cac)
 
 # assign cross-validation bins, both for within-individual and between-individual prediction
 ppl$between_cv_set <- assign_sets(nrow(ppl), n_cv_sets)
@@ -202,6 +209,30 @@ obs$between_cv_set <- ppl$between_cv_set[match(obs$pid, ppl$pid)]
 ppl <- select(ppl, -between_cv_set)
 obs$within_cv_set <- obs$between_cv_set
 obs$within_cv_set[obs$exam == 1] <- 0
+
+# final integrity checks
+
+expect_true(nrow(ppl) == n_ind)
+expect_true(all(obs$pid %in% ppl$pid))
+expect_true(!any(is.na(ppl$age_exam1)))
+expect_true(!any(is.na(ppl$sex)))
+expect_true(!any(is.na(ppl$eth)))
+expect_true(!any(is.na(obs$age)))
+expect_true(!any(is.na(obs$age_su)))
+expect_true(all(obs$exam %in% 1:5))
+expect_true(!any(is.na(obs$cac)))
+expect_true(all(obs$between_cv_set %in% 1:n_cv_sets))
+expect_true(all(obs$within_cv_set %in% 0:n_cv_sets))
+
+# tag the data provenance
+
+ppl$source <- "mesa sample"
+obs$source <- "mesa sample"
+
+# check the columns
+
+expect_true(all(c("pid", "eth", "sex", "age_exam1", "exam_schedule", "source") %in% colnames(ppl)))
+expect_true(all(c("exam", "age", "age_su", "cac", "pid", "scan", "sex", "eth", "source", "between_cv_set", "within_cv_set") %in% colnames(obs)))
 
 # write data to file
 

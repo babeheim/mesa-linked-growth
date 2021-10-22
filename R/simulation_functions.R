@@ -85,7 +85,7 @@ sim_cac_mesa <- function(pars) {
     dat <- list(
       pid = i,
       sex = sample(1:2, 1), # where 1 = male, 2 = female
-      year_of_birth = sample(1916:1955, 1, prob = c(11:30, rep(20, 20))), # weights to resemble MESA sample
+      age_exam1 = (2000 - sample(1916:1955, 1, prob = c(11:30, rep(20, 20)))), # weights to resemble MESA sample
       eth = sample(1:4, 1, prob = c(4, 3, 2, 1)) # weights to resemble four MESA ethnicities (white, black, hispanic, asian)
     )
 
@@ -114,7 +114,7 @@ sim_cac_mesa <- function(pars) {
     dat$exam_schedule <- sample(designs, 1, replace = TRUE, prob = design_weights)
     dat$exams <- as.numeric(strsplit(dat$exam_schedule, split = "")[[1]])
     dat$exam_years <- exam_years[dat$exams]
-    dat$exam_ages <- dat$exam_years - dat$year_of_birth
+    dat$exam_ages <- dat$exam_years - (2000 - dat$age_exam1)
     dat$age_su = (dat$exam_ages - 50)/10
 
     # calculate cac for exam ages
@@ -136,20 +136,19 @@ sim_cac_mesa <- function(pars) {
 
   # extract person info from sim
   ppl <- list()
-  for (i in 1:pars$N_ind) ppl[[i]] <- sim[[i]][c("pid", "sex", "year_of_birth", "exam_schedule", "eth")]
+  for (i in 1:pars$N_ind) ppl[[i]] <- sim[[i]][c("pid", "sex", "age_exam1", "exam_schedule", "eth")]
   ppl %>% bind_rows() %>% as.data.frame() -> ppl
 
   # extract observation info from sim
   obs <- list()
   for (i in 1:pars$N_ind) {
-    obs[[i]] <- sim[[i]][c("exams", "exam_years", "exam_ages", "age_su", "growth_rates", "cac_true", "cac_scan1", "cac_scan2")]
+    obs[[i]] <- sim[[i]][c("exams", "exam_ages", "age_su", "growth_rates", "cac_true", "cac_scan1", "cac_scan2")]
     obs[[i]]$pid <- rep(sim[[i]]$pid, length(sim[[i]]$exam_ages))
   }
   obs %>% bind_rows() %>% as.data.frame() -> obs
 
   obs <- rename(obs,
     growth_rate = growth_rates,
-    exam_year = exam_years,
     exam = exams,
     age = exam_ages
   )
@@ -178,9 +177,12 @@ sim_cac_mesa <- function(pars) {
   out$d <- log(2)/out$k
 
   ppl$cac_start_age <- out$t0 * 10 + 50
-
   obs$sex <- ppl$sex[match(obs$pid, ppl$pid)]
   obs$eth <- ppl$eth[match(obs$pid, ppl$pid)]
+
+  # tag the data provenance
+  ppl$source <- "simulation"
+  obs$source <- "simulation"
 
   out <- c(
     out,

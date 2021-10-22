@@ -1,4 +1,10 @@
 
+rm(list = ls())
+
+source("project_support.R")
+
+############
+
 sim_pars <- prior_pars
 sim_pars$seed <- project_seed
 sim_pars$N_ind <- n_ind
@@ -19,12 +25,17 @@ ppl <- select(ppl, -between_cv_set)
 obs$within_cv_set <- obs$between_cv_set
 obs$within_cv_set[obs$exam == 1] <- 0
 
+# check the columns
+
+expect_true(all(c("pid", "eth", "sex", "age_exam1", "exam_schedule", "source") %in% colnames(ppl)))
+expect_true(all(c("exam", "age", "age_su", "cac", "pid", "scan", "sex", "eth", "source", "between_cv_set", "within_cv_set") %in% colnames(obs)))
+
+# write data to file
+
 write.csv(obs, "observations.csv", row.names = FALSE)
 write.csv(ppl, "people.csv", row.names = FALSE)
 
-
-
-png("figures/simulation_dashboard.png", res = 300, units = "in", height = 10, width = 10, type = "cairo")
+png("figures/simulation_dashboard.png", res = 300, units = "in", height = 10, width = 10)
 
 par(mfrow = c(2, 2))
 
@@ -44,3 +55,7 @@ for (i in 1:length(sim$l)) {
 }
 
 dev.off()
+
+
+
+
