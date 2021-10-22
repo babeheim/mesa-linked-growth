@@ -378,7 +378,7 @@ par(mfrow = c(1, 2))
 
 par(mar = c(5.1, 0.2, 4.1, 0.2))
 
-plot(NULL, xlim = c(30, 60), ylim = c(0.5, 4.5),
+plot(NULL, xlim = c(30, 90), ylim = c(0.5, 4.5),
   xlab = "Onset Age", ylab = "", yaxt = "n",
   frame.plot = FALSE)
 
@@ -404,7 +404,7 @@ for (target_sex in 1:2) {
   }
 }
 
-plot(NULL, xlim = c(2, 10), ylim = c(0.5, 4.5),
+plot(NULL, xlim = c(2, 5), ylim = c(0.5, 4.5),
   xlab = "Doubling Time (Years)", ylab = "", yaxt = "n",
   frame.plot = FALSE)
 
@@ -603,7 +603,7 @@ par(mfrow = c(1, 2))
 
 for (target_sex in 1:2) {
   plot(NULL,
-    xlim = c(0, 90), ylim = c(0, 12),
+    xlim = c(15, 90), ylim = c(2, 5),
     xlab = "Patient Age", ylab = "CAC Doubling Time (Years)",
     main = paste0("CAC Onset vs. Growth, MESA ", c("Men", "Women")[target_sex]),
     las = 1
