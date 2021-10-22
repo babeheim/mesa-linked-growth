@@ -35,7 +35,7 @@ expect_true(all(c("exam", "age", "age_su", "cac", "pid", "scan", "sex", "eth", "
 write.csv(obs, "observations.csv", row.names = FALSE)
 write.csv(ppl, "people.csv", row.names = FALSE)
 
-png("figures/simulation_dashboard.png", res = 300, units = "in", height = 10, width = 10)
+png("figures/simulation_dashboard.png", res = 300, units = "in", height = 10, width = 10, type = "cairo")
 
 par(mfrow = c(2, 2))
 
