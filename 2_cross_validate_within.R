@@ -172,7 +172,7 @@ abline(v = 0, lty = 2)
 for (i in 1:ncol(hurdle_vlls)) {
   points(vll_mean[i], i)
   lines(c(vll_lb[i], vll_ub[i]), c(i, i))
-  mask_text(vll_mean[i], i + 0.2, labels = colnames(hurdle_vlls)[i])
+  text(vll_mean[i], i + 0.2, labels = colnames(hurdle_vlls)[i])
 }
 
 par(mar = c(5.1, 0.5, 4.1, 0.5))
@@ -190,7 +190,7 @@ abline(v = 0, lty = 2)
 for (i in 1:ncol(lognormal_vlls)) {
   points(vll_mean[i], i)
   lines(c(vll_lb[i], vll_ub[i]), c(i, i))
-  mask_text(vll_mean[i], i + 0.2, labels = colnames(lognormal_vlls)[i])
+  text(vll_mean[i], i + 0.2, labels = colnames(lognormal_vlls)[i])
 }
 
 dev.off()

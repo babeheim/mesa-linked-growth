@@ -603,7 +603,7 @@ par(mfrow = c(1, 2))
 
 for (target_sex in 1:2) {
   plot(NULL,
-    xlim = c(15, 90), ylim = c(2, 5),
+    xlim = c(10, 90), ylim = c(1.5, 6),
     xlab = "Patient Age", ylab = "CAC Doubling Time (Years)",
     main = paste0("CAC Onset vs. Growth, MESA ", c("Men", "Women")[target_sex]),
     las = 1
@@ -616,8 +616,13 @@ for (target_sex in 1:2) {
     d_i_mean <- apply(samples[,d_cols[tar]], 2, mean)
     points(t0_i_mean * 10 + 50, d_i_mean * 10, col = col_alpha(eth_col[target_eth], 0.8), pch = 16)
   }
+  tar <- which(ppl$sex == target_sex)
+  t0_i_mean <- apply(samples[,t0_cols[tar]], 2, mean)
+  d_i_mean <- apply(samples[,d_cols[tar]], 2, mean)
+  m_simple <- lm(d_i_mean ~ t0_i_mean)
+  curve(10 * (coef(m_simple)[1] + coef(m_simple)[2] * (x - 50) / 10), from = 15, to = 75, add = TRUE)
   # which combos have >100 CAC by age 60?
-  curve(10 * log(2)/log(100) * ((60-50)/10 - (x-50)/10), from = 0, to = 60, add = TRUE, lty = 2)
+  curve(10 * log(2)/log(100) * ((60-50)/10 - (x-50)/10), from = 0, to = 60, add = TRUE, lty = 2, col = gray(0.3, 0.5))
 }
 
 dev.off()

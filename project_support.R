@@ -16,7 +16,7 @@ library(tikzDevice)
 
 machine_name <- "imac"
 project_seed <- 916
-n_iter <- 1000
+n_iter <- 500
 n_ind <- 100
 n_cv_sets <- 10
 adapt_delta <- 0.9
