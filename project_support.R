@@ -14,8 +14,8 @@ library(tikzDevice)
 
 ##### global parameters #####
 
-machine_name <- "mac-mini"
-project_seed <- 500
+machine_name <- "imac"
+project_seed <- 916
 n_iter <- 1000
 n_ind <- 100
 n_cv_sets <- 10

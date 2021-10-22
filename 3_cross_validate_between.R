@@ -1,4 +1,8 @@
 
+rm(list = ls())
+
+source("project_support.R")
+
 ppl <- read.csv("people.csv")
 obs <- read.csv("observations.csv")
 
@@ -44,7 +48,7 @@ out <- mclapply(1:n_cv_sets, function(validation_set) {
       iter_warmup = floor(n_iter/2), iter_sampling = n_iter, adapt_delta = adapt_delta,
       max_treedepth = 15, data = stan_data, step_size = 0.1,
       refresh = 0, show_messages = FALSE, output_dir = "samples")
-    set_output$diagnostics[[my_model]] <- extract_diagnostics(fit)
+    expect_error(capture.output(set_output$diagnostics[[my_model]] <- extract_diagnostics(fit)), NA)
     samples <- as.data.frame(as_draws_df(fit$draws()))
     if (my_model %in% hurdle_list) set_output$hurdle_vlls[[my_model]] <- samples$hurdle_vll
     if (my_model %in% lognormal_list) set_output$lognormal_vlls[[my_model]] <- samples$lognormal_vll
@@ -152,7 +156,7 @@ for (i in 1:length(lognormal_est)) {
 
 writeLines(prep_latex_variables(calcs), "figures/crossBetweenCalcs.tex")
 
-png("./figures/crossValidationForestBetween.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
+png("./figures/crossValidationForestBetween.png", res = 300, units = "in", height = 5, width = 10)
 
 par(mfrow = c(1, 2))
 

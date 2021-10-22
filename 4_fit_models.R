@@ -1,4 +1,8 @@
 
+rm(list = ls())
+
+source("project_support.R")
+
 obs <- read.csv("observations.csv")
 ppl <- read.csv("people.csv")
 
@@ -28,7 +32,7 @@ fit <- cmdstan_models[["linked_hurdle_lognormal_i"]]$sample(parallel_chains = 4,
 
 fit$save_object(file = "./RData/fit.RDS")
 
-diagnostics <- extract_diagnostics(fit)
+expect_error(capture.output(diagnostics <- extract_diagnostics(fit)), NA)
 diagnostics$machine_name <- machine_name
 diagnostics$project_seed <- project_seed
 diagnostics$n_ind <- n_ind
@@ -55,14 +59,12 @@ for (i in 1:nrow(ppl)) {
   ppl$hasCacExamOne[i] <- any(obs$cac[obs$pid == ppl$pid[i] & obs$exam == 1] > 0)
 }
 
-ppl$ageExamOne <- 2000 - ppl$year_of_birth
-
 descriptives <- list(
   nPatients = nrow(ppl),
   nObservations = nrow(obs),
   nPatientExams = length(unique(paste(obs$exam, obs$pid))),
-  meanAgeExamOne = sprintf("%1.1f", mean(ppl$ageExamOne)),
-  stdDevAgeExamOne = sprintf("%1.1f", sd(ppl$ageExamOne)),
+  meanAgeExamOne = sprintf("%1.1f", mean(ppl$age_exam1)),
+  stdDevAgeExamOne = sprintf("%1.1f", sd(ppl$age_exam1)),
   nOneExam = sum(ppl$n_exams == 1),
   nLongData = sum(ppl$n_exams != 1),
   nTwoExams = sum(ppl$n_exams == 2),
@@ -368,7 +370,7 @@ writeLines(texttab(varianceDecomp_tex, hlines = c(1, 5)), "./figures/varianceDec
 
 print("make figure onsetDoublingForest")
 
-png("./figures/onsetDoublingForest.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
+png("./figures/onsetDoublingForest.png", res = 300, units = "in", height = 5, width = 10)
 
 sex_offset <- 0.1
 
@@ -437,7 +439,7 @@ dev.off()
 
 print("make figure hasCacAgeSex")
 
-png("./figures/hasCacAgeSex.png", res = 300, units = "in", height = 5, width = 5, type = "cairo")
+png("./figures/hasCacAgeSex.png", res = 300, units = "in", height = 5, width = 5)
 
 dm <- obs_age_sex
 
@@ -477,7 +479,7 @@ dev.off()
 
 print("make figure hasCacAgeSexEthnicity")
 
-png("./figures/hasCacAgeSexEthnicity.png", res = 300, units = "in", height = 10, width = 10, type = "cairo")
+png("./figures/hasCacAgeSexEthnicity.png", res = 300, units = "in", height = 10, width = 10)
 
 dm <- obs_age_sex_eth
 
@@ -516,7 +518,7 @@ dev.off()
 
 print("make figure medianCacAge5Sex")
 
-png("./figures/medianCacAge5Sex.png", res = 300, units = "in", height = 5, width = 5, type = "cairo")
+png("./figures/medianCacAge5Sex.png", res = 300, units = "in", height = 5, width = 5)
 
 dm <- obs_age5_sex
 
@@ -554,7 +556,7 @@ dev.off()
 
 print("make figure medianCacAgeSexEthnicity")
 
-png("./figures/medianCacAge5SexEthnicity.png", res = 300, units = "in", height = 10, width = 10, type = "cairo")
+png("./figures/medianCacAge5SexEthnicity.png", res = 300, units = "in", height = 10, width = 10)
 
 dm <- obs_age5_sex_eth
 
@@ -595,7 +597,7 @@ dev.off()
 
 print("make figure onsetGrowthEthnicitySex")
 
-png("./figures/onsetGrowthEthnicitySex.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
+png("./figures/onsetGrowthEthnicitySex.png", res = 300, units = "in", height = 5, width = 10)
 
 par(mfrow = c(1, 2))
 
