@@ -9,8 +9,12 @@ dir_init("RData", verbose = TRUE)
 
 tic("run mesa-linked-growth project")
 
-tic("simulate data")
-source("1_sim_data.R")
+# tic("simulate data")
+# source("1_sim_data.R")
+# toc(log = TRUE)
+
+tic("prep MESA data")
+source("1_prep_data.R")
 toc(log = TRUE)
 
 tic("run within-patient cross-validations")
