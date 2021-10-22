@@ -153,7 +153,7 @@ for (i in 1:length(lognormal_est)) {
 writeLines(prep_latex_variables(calcs), "figures/crossWithinCalcs.tex")
 
 
-png("./figures/crossValidationForestWithin.png", res = 300, units = "in", height = 5, width = 10)
+png("./figures/crossValidationForestWithin.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
 
 par(mfrow = c(1, 2))
 

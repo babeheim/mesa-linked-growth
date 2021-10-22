@@ -368,7 +368,7 @@ writeLines(texttab(varianceDecomp_tex, hlines = c(1, 5)), "./figures/varianceDec
 
 print("make figure onsetDoublingForest")
 
-png("./figures/onsetDoublingForest.png", res = 300, units = "in", height = 5, width = 10)
+png("./figures/onsetDoublingForest.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
 
 sex_offset <- 0.1
 
@@ -437,7 +437,7 @@ dev.off()
 
 print("make figure hasCacAgeSex")
 
-png("./figures/hasCacAgeSex.png", res = 300, units = "in", height = 5, width = 5)
+png("./figures/hasCacAgeSex.png", res = 300, units = "in", height = 5, width = 5, type = "cairo")
 
 dm <- obs_age_sex
 
@@ -477,7 +477,7 @@ dev.off()
 
 print("make figure hasCacAgeSexEthnicity")
 
-png("./figures/hasCacAgeSexEthnicity.png", res = 300, units = "in", height = 10, width = 10)
+png("./figures/hasCacAgeSexEthnicity.png", res = 300, units = "in", height = 10, width = 10, type = "cairo")
 
 dm <- obs_age_sex_eth
 
@@ -516,7 +516,7 @@ dev.off()
 
 print("make figure medianCacAge5Sex")
 
-png("./figures/medianCacAge5Sex.png", res = 300, units = "in", height = 5, width = 5)
+png("./figures/medianCacAge5Sex.png", res = 300, units = "in", height = 5, width = 5, type = "cairo")
 
 dm <- obs_age5_sex
 
@@ -554,7 +554,7 @@ dev.off()
 
 print("make figure medianCacAgeSexEthnicity")
 
-png("./figures/medianCacAge5SexEthnicity.png", res = 300, units = "in", height = 10, width = 10)
+png("./figures/medianCacAge5SexEthnicity.png", res = 300, units = "in", height = 10, width = 10, type = "cairo")
 
 dm <- obs_age5_sex_eth
 
@@ -595,7 +595,7 @@ dev.off()
 
 print("make figure onsetGrowthEthnicitySex")
 
-png("./figures/onsetGrowthEthnicitySex.png", res = 300, units = "in", height = 5, width = 10)
+png("./figures/onsetGrowthEthnicitySex.png", res = 300, units = "in", height = 5, width = 10, type = "cairo")
 
 par(mfrow = c(1, 2))
 
