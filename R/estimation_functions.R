@@ -1,4 +1,71 @@
 
+
+fit_training_validation <- function(validation_set, hurdle_models, lognormal_models, ppl, obs, prior_pars) {
+
+  model_list <- sort(unique(c(hurdle_models, lognormal_models)))
+
+  set_output <- list(
+    hurdle_vlls = list(),
+    lognormal_vlls = list(),
+    diagnostics = list()
+  )
+
+  obs$in_validation <- obs$cv_set_id == validation_set
+  obs$in_training <- !obs$in_validation
+
+  if (!any(obs$in_validation)) stop("cross-validation has no validation set!")
+
+  stan_data <- c(
+    prior_pars,
+    list(
+      N_ind = nrow(ppl),
+      sex = as.array(ppl$sex),
+      eth = as.array(ppl$eth),
+      # training set
+      N_obs = sum(obs$in_training),
+      pid = as.array(obs$pid[obs$in_training]),
+      age_su = as.array(obs$age_su[obs$in_training]),
+      y = as.array(obs$cac[obs$in_training]),
+      # validation set
+      N_obs_v = sum(obs$in_validation),
+      pid_v = as.array(obs$pid[obs$in_validation]),
+      age_su_v = as.array(obs$age_su[obs$in_validation]),
+      y_v = as.array(obs$cac[obs$in_validation])
+    )
+  )
+
+  for (my_model in model_list) {
+    fit <- cmdstan_models[[my_model]]$sample(parallel_chains = 4, chains = 4,
+      iter_warmup = floor(n_iter/2), iter_sampling = n_iter, adapt_delta = adapt_delta,
+      max_treedepth = 15, data = stan_data, step_size = 0.1,
+      refresh = 0, show_messages = FALSE, output_dir = "samples")
+    expect_error(capture.output(set_output$diagnostics[[my_model]] <- extract_diagnostics(fit)), NA)
+    samples <- as.data.frame(as_draws_df(fit$draws()))
+    if (my_model %in% hurdle_list) set_output$hurdle_vlls[[my_model]] <- samples$hurdle_vll
+    if (my_model %in% lognormal_list) set_output$lognormal_vlls[[my_model]] <- samples$lognormal_vll
+  }
+
+  return(set_output)
+
+}
+
+
+chain_plotter <- function(parameter, samples) {
+
+  h <- samples$`.chain`
+  s <- samples[[parameter]]
+
+  plot(NULL, xlim = c(1, n_iter), ylim = range(s), ylab = "", main = parameter)
+
+  n_chains <- max(h)
+  chain_cols <- plasma(n_chains)
+
+  for (i in 1:n_chains) {
+    points(s[h == i], type = "l", col = col_alpha(chain_cols[i], 0.8))
+  }
+
+}
+
 extract_diagnostics <- function(cmdstan_fit) {
 
   out <- list()
@@ -244,8 +311,6 @@ calc_key_estimates <- function(fit, data) {
     calcs$h4p1e3 <- summarize_samples(samples$lk_ind_rho)
     calcs$h4p1e3$label <- "onsetGrowthCorrAlt"
   }
-
-  # its not clear we can actually detect this, with only a few observations per person...
 
   return(calcs)
 

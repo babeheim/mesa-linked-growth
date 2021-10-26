@@ -11,14 +11,15 @@ library(tictoc)
 library(testthat)
 library(cmdstanr)
 library(tikzDevice)
+library(viridis)
 
 ##### global parameters #####
 
-machine_name <- "imac"
-project_seed <- 916
-n_iter <- 500
+machine_name <- "thinkpad-x390"
+project_seed <- 1
+n_iter <- 1000
 n_ind <- 100
-n_cv_sets <- 10
+n_cv_sets <- 3
 adapt_delta <- 0.9
 
 set.seed(project_seed)
@@ -42,7 +43,7 @@ prior_pars <- list(
   s_mu            =     2  # 0.1 (none) to 5 (lots)
 )
 
-sex_col <- c("dodgerblue", "firebrick3")
+sex_col <- c("#1EBAFF", "firebrick3")
 
 # eth_col <- c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c")
 eth_col <- c("#dae318", "#2fb47c", "#2b738e", "#460e5a") # viridis

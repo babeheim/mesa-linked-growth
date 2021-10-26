@@ -1,4 +1,18 @@
 
+
+
+doubling_point <- function(t0, A) 10 * log(2)/log(100) * ((A - 50)/10 - (t0 - 50)/10)
+
+growth_polygon <- function(A, col = "blue") {
+  A_left <- A
+  y_bottom_left <- doubling_point(t0 = (A_left - 10), A = A_left)
+  y_bottom_right <- doubling_point(t0 = (A_left - 10), A = A_left)
+  A_right <- A + 1
+  y_top_right <- doubling_point(t0 = (A_right - 100), A = A_right)
+  y_top_left <- doubling_point(t0 = (A_right - 100), A = A_right)
+  polygon(c(A_left-10, A_right-10, A_right-100,A_left-100), c(y_bottom_left, y_bottom_right, y_top_right, y_top_left), col = col, border = NA)
+}
+
 mask_text <- function(at, y, labels, srt = 0, ...) {
   mask <- paste(rep("█", nchar(labels)), collapse = "")
   text(at, y, labels = mask, col = "white", srt = srt)
