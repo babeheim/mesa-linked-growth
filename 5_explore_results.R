@@ -532,7 +532,7 @@ text(47.5, 0.95, labels = "(a)")
 
 plot(NULL,
   xlim = c(36, 55), ylim = c(3, 4.2),
-  xlab = "Onset Age", ylab = "CAC Doubling Time (Years)",
+  xlab = "CAC Onset Age", ylab = "CAC Doubling Time (Years)",
   las = 1, xaxt = "n", yaxt = "n", frame.plot = TRUE
 )
 # what doubling time hits 100 CAC at age A for a given onset age x?
@@ -621,7 +621,7 @@ par(mfrow = c(1, 2))
 for (target_sex in 1:2) {
   plot(NULL,
     xlim = c(0, 90), ylim = c(1, 6.5),
-    xlab = "Patient Age", ylab = "CAC Doubling Time (Years)",
+    xlab = "CAC Onset Age", ylab = "CAC Doubling Time (Years)",
     las = 1, main = c("MESA Men", "MESA Women")[target_sex],
     xaxt = "n", yaxt = "n"
   )
