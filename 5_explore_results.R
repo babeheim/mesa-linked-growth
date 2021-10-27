@@ -564,27 +564,27 @@ pos_code <- matrix(c(3, 4, 2, 4, 4, 3, 1, 4), byrow = TRUE, ncol = 4)
 
 for (target_sex in 1:2) {
   for (target_eth in 1:4) {
-    tar <- which(ppl$sex == target_sex & ppl$eth == target_eth & ppl$cac_obs)
+    tar <- which(ppl$sex == target_sex & ppl$eth == target_eth)
     t0 <- apply(samples[,t0_cols[tar]], 1, mean)
     t0_mean <- mean(t0)
     d <- apply(samples[,d_cols[tar]], 1, mean)
     d_mean <- mean(d)
     points(t0_mean * 10 + 50, d_mean * 10, pch = 16,
       col = ifelse(target_sex == 2, "black", gray(0.3)))
-    text(t0_mean * 10 + 50, d_mean * 10, labels = eth_labels[target_eth],
-      pos = pos_code[target_sex, target_eth], col = ifelse(target_sex == 2, "black", gray(0.3)))
+    # text(t0_mean * 10 + 50, d_mean * 10, labels = eth_labels[target_eth],
+    #   pos = pos_code[target_sex, target_eth], col = ifelse(target_sex == 2, "black", gray(0.3)))
   }
-  tar <- which(ppl$sex == target_sex & ppl$cac_obs)
+  tar <- which(ppl$sex == target_sex)
   t0 <- apply(samples[,t0_cols[tar]], 1, mean)
   t0_mean <- mean(t0)
   d <- apply(samples[,d_cols[tar]], 1, mean)
   d_mean <- mean(d)
   points(t0_mean * 10 + 50, d_mean * 10, pch = 16,
          col = ifelse(target_sex == 2, "black", gray(0.3)), cex = 1.5)
-  text(t0_mean * 10 + 50, d_mean * 10, pch = 16,
-         col = ifelse(target_sex == 2, "black", gray(0.3)), 
-         labels = ifelse(target_sex == 2, "\\textbf{Women}", "\\textbf{Men}"),
-         cex = 1.1, pos = 2)
+  # text(t0_mean * 10 + 50, d_mean * 10, pch = 16,
+  #        col = ifelse(target_sex == 2, "black", gray(0.3)), 
+  #        labels = ifelse(target_sex == 2, "\\textbf{Women}", "\\textbf{Men}"),
+  #        cex = 1.1, pos = 2)
 }
 
 axis(2, at = seq(2.4, 5.0, by = 0.2), tck = 0.02, las = 1)
