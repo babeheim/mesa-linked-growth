@@ -3,7 +3,8 @@ rm(list = ls())
 
 source("project_support.R")
 
-fit <- readRDS("./RData/fit.RDS")
+# fit <- readRDS("./RData/fit.RDS")
+fit <- rstan::read_stan_csv(list.files("samples-full", full.names = TRUE))
 
 obs <- read.csv("observations.csv")
 ppl <- read.csv("people.csv")
@@ -531,12 +532,12 @@ text(47.5, 0.95, labels = "(a)")
 #############
 
 plot(NULL,
-  xlim = c(36, 55), ylim = c(3, 4.2),
+  xlim = c(40, 65), ylim = c(3, 4.2),
   xlab = "CAC Onset Age", ylab = "CAC Doubling Time (Years)",
   las = 1, xaxt = "n", yaxt = "n", frame.plot = TRUE
 )
 # what doubling time hits 100 CAC at age A for a given onset age x?
-ages <- 27:85
+ages <- 25:100
 age_cols <- viridis(length(ages))
 # the two critical points in the polygon are:
 for (i in ages) {
@@ -554,11 +555,15 @@ x75 <- 50
 text(x75 + 0.5, doubling_point(x75, 75), "100 CAC by Age 75",
   srt = (360 / (2*pi)) * atan(iso_slope_true), col = "white", cex = 0.8)
 
-curve(doubling_point(x, 60), from = 0, to = 61, add = TRUE, col = "white", lwd = 0.1)
-curve(doubling_point(x, 65), from = 0, to = 61, add = TRUE, col = "white", lwd = 0.1)
-curve(doubling_point(x, 70), from = 0, to = 61, add = TRUE, col = "white", lwd = 0.1)
-curve(doubling_point(x, 75), from = 0, to = 61, add = TRUE, col = "white", lwd = 0.1)
-curve(doubling_point(x, 80), from = 0, to = 61, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 60), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 65), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 70), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 75), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 80), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 85), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 90), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 95), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
+curve(doubling_point(x, 100), from = 0, to = 100, add = TRUE, col = "white", lwd = 0.1)
 
 pos_code <- matrix(c(3, 4, 2, 4, 4, 3, 1, 4), byrow = TRUE, ncol = 4)
 
@@ -589,8 +594,8 @@ for (target_sex in 1:2) {
 
 axis(2, at = seq(2.4, 5.0, by = 0.2), tck = 0.02, las = 1)
 axis(2, at = seq(2.4, 5.0, by = 0.1), tck = 0.01, las = 1, labels = NA)
-axis(1, at = seq(36, 55, by = 2), tck = 0.02)
-axis(1, at = seq(37, 56, by = 1), tck = 0.01, labels = NA)
+axis(1, at = seq(0, 90, by = 2), tck = 0.02)
+axis(1, at = seq(0, 90, by = 1), tck = 0.01, labels = NA)
 text(36.5, 4.15, labels = "(b)")
 
 dev.off()
